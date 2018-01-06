@@ -9,7 +9,7 @@
 </head>
 <body>
   <!-- Fixed navbar -->
-        <nav id="header" class="navbar navbar-top">
+        <nav id="header" class="navbar navbar-top navbar-light" style="background-color: #e3f2fd;">
             <div id="header-container" class="container navbar-container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -27,6 +27,7 @@
                         <li><a href="/auth/register">Register</a></li>
                         <li><a href="/exp">Experience</a></li>
                         <li><a href="/auth/register">Logout</a></li>
+                        <li><a href="/chat">Chat</a></li>
                     </ul>
                 </div><!-- /.nav-collapse -->
             </div><!-- /.container -->
@@ -64,7 +65,10 @@
 {{{ body }}}
 </body>
 <!-- jQuery library -->
-<script="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- latest compiled javascript for bootstrap-->
-<script="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!-- socket io -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascript/check.js"></script>
 </html>

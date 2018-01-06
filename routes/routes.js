@@ -28,4 +28,6 @@ router.get('/auth/logout', AuthController.logout);
 router.get('/exp', HomeController.exp); // input of education and work experience
 router.post('/exp', HomeController.updateExp);
 
+router.get('/chat', HomeController.chat); // chat system
+
 module.exports = router;

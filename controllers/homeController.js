@@ -13,8 +13,15 @@ exports.home = (req, res)=>{
   .populate('username')
   .exec((err, education)=>{
     if (err) console.log(err);
-    res.render('home', { 'education' : education});
-    // console.log(education);
+
+    Workexp.findOne({ username : req.params.id})
+    .populate('username')
+    .exec((err, workexp)=>{
+      if (err) console.log(err);
+      console.log(education);
+      console.log(workexp);
+      res.render('home', { 'education' : education, 'workexp' : workexp});
+    });
   });
 };
 
@@ -43,9 +50,24 @@ exports.updateExp = (req, res)=>{
       if (err) {
         req.flash('error', 'Could not add education information');
         res.redirect('experience');
+      }
+    });
+    Workexp.create({
+      company : req.body.company,
+      start : req.body.workstart,
+      end : req.body.workend,
+      username : req.user._id
+    }, (err, createdWork)=>{
+      if (err) {
+        req.flash('error', 'Could not add work experience');
+        res.redirect('experience');
       } else {
         res.redirect('home');
       }
     });
   }
 };
+
+exports.chat = (req, res)=>{
+  res.render('messages');
+}

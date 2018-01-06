@@ -8,6 +8,8 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const exphbs = require('express-handlebars');
 const path = require('path');
+const server = require('http').createServer(app); // sockets runs on server not express
+const io = require('socket.io')(server);
 const flash = require('connect-flash');
 const passport = require('passport');
 const port = process.env.PORT || 3000;
@@ -72,6 +74,95 @@ app.use(expressValidator({
 // routes
 app.use('/', routes);
 
-app.listen(port, ()=>{
-  console.log('----express connected----');
+server.listen(port, ()=>{
+  console.log('----express io connected----');
 });
+
+let users = [];
+var numUsers = 0;
+
+// socket.io connected
+io.on('connection', (socket)=>{
+  console.log('a user connected');
+
+  // set username
+  socket.on('set user', (data, callback)=>{
+    if (users.indexOf(data) != -1) {
+      callback(false);
+    } else {
+      callback(true); // run the function in check
+      socket.username = data;
+      users.push(socket.username);
+      updateUsers();
+    }
+  });
+
+  socket.on('typing', function(){
+    io.sockets.emit('show typing', {user: socket.username});
+    // console.log(socket.username);
+  });
+
+  // on click, event name, callback function
+  // emit sends to user, executing the event
+  socket.on('send message', function(data) {
+    io.sockets.emit('show message', {msg: data, user: socket.username});
+  });
+
+  socket.on('disconnect', function(data) {
+    if(!socket.username) return;
+    users.splice(users.indexOf(socket.username), 1);
+    updateUsers();
+  });
+
+  function updateUsers() {
+    io.sockets.emit('users', users);
+  }
+});
+
+// // Chatroom
+//
+// let users = []
+// var numUsers = 0;
+// // // Socket.io connect
+// io.on('connection', (socket) => {
+// //   // Set Username
+//   socket.on('set user', (data, callback) => {
+//     // console.log('setting');
+//     if(users.indexOf(data) != -1){
+//       callback(false);
+//     } else {
+//       callback(true);
+//       socket.username = data;
+//       users.push(socket.username);
+//       updateUsers();
+//     }
+//   });
+// //
+//   socket.on('send message', function(data){
+//     io.sockets.emit('show message', {msg: data, user: socket.username});
+//   });
+// //
+//   socket.on('typing', function() {
+//       socket.emit('typing', { msg : "typing...",
+//         user: socket.username
+//       });
+//     });
+//
+//     socket.on('stop typing', function () {
+//        socket.emit('stop typing', { msg : "",
+//          user: socket.username
+//        });
+//      });
+//
+// //
+//   socket.on('disconnect', function(data){
+//     if(!socket.username) return;
+//     users.splice(users.indexOf(socket.username), 1);
+//     updateUsers();
+//   });
+// //
+//   function updateUsers(){
+//     io.sockets.emit('users', users);
+//   }
+// //
+// });
